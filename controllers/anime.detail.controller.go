@@ -68,11 +68,11 @@ func scrapAnimeDetail(link string) models.AnimeDetail {
 	}
 
 	return models.AnimeDetail{
-		Type:     animeType,
+		Type:     strings.Split(animeType, " Anime")[0],
 		Plot:     plot,
 		Genres:   genres,
 		Released: released,
-		Status:   status,
+		Status:   strings.Split(status, " ")[0],
 		Other:    other,
 		Episodes: episodes,
 	}
