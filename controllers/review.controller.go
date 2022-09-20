@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"historm_api/databases"
 	"historm_api/models"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -27,18 +29,30 @@ func RetrieveReviewsByAnime(c *gin.Context) {
 		return
 	}
 
-	var reviews []models.Review
+	var reviewList []map[string]interface{}
+	var populate bson.M = bson.M{"$lookup": bson.M{
+		"from":         "user",
+		"localField":   "user",
+		"foreignField": "_id",
+		"as":           "user",
+	}}
 
-	cur, err := reviewCollection.Find(ctx, bson.M{"anime.link": body["link"]})
+	var search bson.M = bson.M{"$match": bson.M{"anime.link": body["animeLink"]}}
+	var sort bson.M = bson.M{"$sort": bson.M{"createdAt": -1}}
+	var limit bson.M = bson.M{"$limit": 2}
+	skipValue, _ := strconv.Atoi(body["skipValue"])
 
+	var skip bson.M = bson.M{"$skip": skipValue}
+
+	cursor, err := reviewCollection.Aggregate(ctx, []bson.M{search, sort, skip, limit, populate})
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	cursor.All(context.TODO(), &reviewList)
+	fmt.Println(reviewList)
 
-	cur.All(context.TODO(), &reviews)
-
-	c.JSON(http.StatusAccepted, reviews)
+	c.JSON(http.StatusAccepted, reviewList)
 }
 
 func RetrieveReviewsByUser(c *gin.Context) {
@@ -68,6 +82,7 @@ func RetrieveReviewsByUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	defer cursor.Close(ctx)
 
 	cursor.All(context.TODO(), &reviews)

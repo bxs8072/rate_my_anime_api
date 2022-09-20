@@ -6,8 +6,8 @@ import (
 
 type Reply struct {
 	Id        primitive.ObjectID   `bson:"_id,omitempty" json:"id"`
-	UserId    primitive.ObjectID   `bson:"userId" json:"userId"`
-	ReviewId  primitive.ObjectID   `bson:"reviewId" json:"reviewId"`
+	User      primitive.ObjectID   `bson:"user" json:"user"`
+	Review    primitive.ObjectID   `bson:"review" json:"review"`
 	Message   string               `bson:"message" json:"message"`
 	CreatedAt primitive.Timestamp  `bson:"createdAt" json:"createdAt"`
 	Likes     []primitive.ObjectID `bson:"likes" json:"likes"`

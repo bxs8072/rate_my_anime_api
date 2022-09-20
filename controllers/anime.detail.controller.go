@@ -86,7 +86,6 @@ func RetrieveAnimeDetail(ctx *gin.Context) {
 		})
 	}
 
-	SendNotification()
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": scrapAnimeDetail(body.Link),
 	})

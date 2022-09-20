@@ -50,6 +50,24 @@ func main() {
 		reply.POST("/retrieve", controllers.RetrieveReplies)
 	}
 
+	favorite := app.Group("/api/v1/favorite")
+	favorite.Use(middlewares.AuthMiddleware())
+	{
+		favorite.POST("/create", controllers.CreateFavorite)
+		favorite.POST("/update", controllers.UpdateFavorite)
+		favorite.POST("/retrieve", controllers.RetrieveFavorite)
+		favorite.POST("/retrieve/all", controllers.RetrieveFavoriteAll)
+	}
+
+	rating := app.Group("/api/v1/rating")
+	rating.Use(middlewares.AuthMiddleware())
+	{
+		rating.POST("/create", controllers.CreateRating)
+		rating.POST("/update", controllers.UpdateRating)
+		rating.POST("/retrieve/user", controllers.RetreiveRatingForUser)
+		rating.POST("/retrieve/total", controllers.RetreiveTotalRating)
+	}
+
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 
