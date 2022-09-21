@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"historm_api/databases"
 	"historm_api/models"
 	"net/http"
@@ -138,6 +137,5 @@ func UpdateFavorite(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(result)
 	c.JSON(http.StatusAccepted, result)
 }

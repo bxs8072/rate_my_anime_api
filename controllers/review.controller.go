@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"historm_api/databases"
 	"historm_api/models"
 	"net/http"
@@ -50,7 +49,6 @@ func RetrieveReviewsByAnime(c *gin.Context) {
 		return
 	}
 	cursor.All(context.TODO(), &reviewList)
-	fmt.Println(reviewList)
 
 	c.JSON(http.StatusAccepted, reviewList)
 }
@@ -144,5 +142,105 @@ func DeleteReview(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	c.JSON(http.StatusAccepted, result)
+}
+
+func HandleLikes(c *gin.Context) {
+	var body map[string]string
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	defer cancel()
+
+	if err := c.BindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := primitive.ObjectIDFromHex(body["user"])
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	review, err := primitive.ObjectIDFromHex(body["id"])
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var ones []models.Review
+
+	cursor, err := reviewCollection.Find(ctx, bson.M{"_id": review, "likes": bson.M{"$in": []primitive.ObjectID{user}}})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	cursor.All(ctx, &ones)
+
+	var result *mongo.UpdateResult
+
+	if ones == nil {
+		result, err = reviewCollection.UpdateByID(ctx, review, bson.M{"$push": bson.M{"likes": user}})
+	} else {
+		result, err = reviewCollection.UpdateByID(ctx, review, bson.M{"$pull": bson.M{"likes": user}})
+	}
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusAccepted, result)
+}
+
+func HandleDisLikes(c *gin.Context) {
+	var body map[string]string
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	defer cancel()
+
+	if err := c.BindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := primitive.ObjectIDFromHex(body["user"])
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	review, err := primitive.ObjectIDFromHex(body["id"])
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var ones []models.Review
+
+	cursor, err := reviewCollection.Find(ctx, bson.M{"_id": review, "dislikes": bson.M{"$in": []primitive.ObjectID{user}}})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	cursor.All(ctx, &ones)
+
+	var result *mongo.UpdateResult
+
+	if ones == nil {
+		result, err = reviewCollection.UpdateByID(ctx, review, bson.M{"$push": bson.M{"dislikes": user}})
+	} else {
+		result, err = reviewCollection.UpdateByID(ctx, review, bson.M{"$pull": bson.M{"dislikes": user}})
+	}
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusAccepted, result)
 }

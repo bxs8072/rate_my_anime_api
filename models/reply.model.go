@@ -10,6 +10,6 @@ type Reply struct {
 	Review    primitive.ObjectID   `bson:"review" json:"review"`
 	Message   string               `bson:"message" json:"message"`
 	CreatedAt primitive.Timestamp  `bson:"createdAt" json:"createdAt"`
-	Likes     []primitive.ObjectID `bson:"likes" json:"likes"`
-	Dislikes  []primitive.ObjectID `bson:"dislikes" json:"dislikes"`
+	Likes     []primitive.ObjectID `bson:"likes,omitempty" json:"likes"`
+	Dislikes  []primitive.ObjectID `bson:"dislikes,omitempty" json:"dislikes"`
 }

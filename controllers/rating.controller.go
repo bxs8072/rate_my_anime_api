@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"historm_api/databases"
 	"historm_api/models"
 	"net/http"
@@ -19,7 +18,6 @@ var ratingCollection *mongo.Collection = databases.GetCollection(databases.DB, "
 
 func trimLink(link string) string {
 	var last string = strings.Split(strings.Split(link, "gogoanime.")[1], "/")[0]
-	fmt.Println(last)
 
 	return last
 }
@@ -86,8 +84,6 @@ func RetreiveTotalRating(c *gin.Context) {
 		panic(err)
 	}
 
-	fmt.Println(showsWithInfo)
-
 	c.JSON(http.StatusAccepted, gin.H{"data": showsWithInfo})
 }
 
@@ -140,6 +136,5 @@ func UpdateRating(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(result)
 	c.JSON(http.StatusAccepted, result)
 }

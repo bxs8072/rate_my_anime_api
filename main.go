@@ -39,6 +39,8 @@ func main() {
 	review.Use(middlewares.AuthMiddleware())
 	{
 		review.POST("/create", controllers.CreateReview)
+		review.POST("/likes/handle", controllers.HandleLikes)
+		review.POST("/dislikes/handle", controllers.HandleDisLikes)
 		review.POST("/retrieve/anime", controllers.RetrieveReviewsByAnime)
 		review.POST("/retrieve/user", controllers.RetrieveReviewsByUser)
 	}
@@ -48,6 +50,9 @@ func main() {
 	{
 		reply.POST("/create", controllers.CreateReply)
 		reply.POST("/retrieve", controllers.RetrieveReplies)
+		reply.POST("/retrieve/length", controllers.RetrieveRepliesLength)
+		reply.POST("/likes/handle", controllers.HandleReplyLikes)
+		reply.POST("/dislikes/handle", controllers.HandleReplyDisLikes)
 	}
 
 	favorite := app.Group("/api/v1/favorite")

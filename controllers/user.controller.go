@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"historm_api/databases"
 	"historm_api/models"
 	"net/http"
@@ -77,8 +76,6 @@ func InsertUser(c *gin.Context) {
 	var uid = payload.(primitive.M)["uid"]
 	var email = payload.(primitive.M)["email"]
 
-	fmt.Println(email)
-
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	var body map[string]string
 	defer cancel()
@@ -92,8 +89,6 @@ func InsertUser(c *gin.Context) {
 	var middleName = body["middleName"]
 	var lastName = body["lastName"]
 	var displayImage = body["displayImage"]
-
-	fmt.Println(firstName)
 
 	result, err := userCollection.InsertOne(ctx, bson.M{
 		"uid":          uid,
