@@ -51,6 +51,6 @@ func UploadFile(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"result": result,
-		"data":   "http://10.0.2.2:8080/api/v1/image/" + newFileName,
+		"data":   "https://rate-my-anime-api-git-oeghfd4pma-uc.a.run.app/api/v1/image/" + newFileName,
 	})
 }
