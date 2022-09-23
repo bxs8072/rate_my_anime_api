@@ -42,7 +42,7 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 
-	result, err := userCollection.UpdateOne(ctx, bson.M{"_id": user}, bson.M{"$set": bson.M{"displayImage": "http://10.0.2.2:8080/api/v1/image/" + newFileName}})
+	result, err := userCollection.UpdateOne(ctx, bson.M{"_id": user}, bson.M{"$set": bson.M{"displayImage": "https://rate-my-anime-api-git-oeghfd4pma-uc.a.run.app/api/v1/image/" + newFileName}})
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
