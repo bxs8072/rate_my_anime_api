@@ -18,8 +18,13 @@ func main() {
 	app.Use(gin.Logger())
 	app.Use(gin.Recovery())
 
-	app.Use(middlewares.ApiMiddleware())
+	app.Static("/files", "./public")
 
+	app.GET("/api/v1/image/:file", func(ctx *gin.Context) {
+		ctx.File("./public/display_images/" + ctx.Param("file"))
+	})
+
+	app.Use(middlewares.ApiMiddleware())
 	app.POST("/api/v1/anime", controllers.RetrieveAnimeList)
 	app.POST("/api/v1/latest-anime", controllers.RetrieveLatestAnimeList)
 	app.POST("/api/v1/anime-detail", controllers.RetrieveAnimeDetail)
@@ -28,11 +33,12 @@ func main() {
 	user := app.Group("/api/v1/user")
 	user.Use(middlewares.AuthMiddleware())
 	{
-		user.POST("/", controllers.GetLoggedInUser)
+		user.POST("/current", controllers.GetLoggedInUser)
 		user.POST("/email", controllers.GetUserByEmail)
 		user.POST("/create", controllers.InsertUser)
 		user.POST("/delete", controllers.DeleteUser)
 		user.POST("/update", controllers.UpdateUser)
+		user.POST("/upload", controllers.UploadFile)
 	}
 
 	review := app.Group("/api/v1/review")
@@ -73,10 +79,12 @@ func main() {
 		rating.POST("/retrieve/total", controllers.RetreiveTotalRating)
 	}
 
-	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
+	if port == "" {
+		port = "80"
+	}
 
-	fmt.Printf("Server is running in address http://%s:%s", host, port)
-	app.Run(host + ":" + port)
+	fmt.Printf("Server is running in port %s", port)
+	app.Run(":" + port)
 
 }

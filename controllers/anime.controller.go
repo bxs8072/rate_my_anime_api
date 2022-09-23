@@ -28,6 +28,8 @@ func scrapAnimeList(animeType string, value string, page int) []models.Anime {
 		url = baseUrl + "/" + strings.Join(strings.Split(strings.ToLower(value), " "), "-") + ".html?page=" + strconv.Itoa(page)
 	} else if animeType == "subcategory" {
 		url = baseUrl + "/sub-category/" + strings.Join(strings.Split(strings.ToLower(value), " "), "-") + "?page=" + strconv.Itoa(page)
+	} else if animeType == "search" {
+		url = baseUrl + "/search.html?keyword=" + strings.Join(strings.Split(strings.ToLower(value), " "), "+")
 	} else {
 		url = ""
 	}

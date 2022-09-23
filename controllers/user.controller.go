@@ -129,7 +129,12 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	result, err := userCollection.UpdateOne(ctx, bson.D{{Key: "uid", Value: uid}}, user)
+	result, err := userCollection.UpdateOne(ctx, bson.D{{Key: "uid", Value: uid}}, bson.M{"$set": bson.M{
+		"firstName":    user.FirstName,
+		"middleName":   user.MiddleName,
+		"lastName":     user.LastName,
+		"displayImage": user.DisplayImage,
+	}})
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

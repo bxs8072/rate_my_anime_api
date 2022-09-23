@@ -14,7 +14,7 @@ import (
 func ConnectDB() *mongo.Client {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	uri := "mongodb://localhost:27017"
+	uri := "mongodb+srv://kyubee:root@cluster0.fwzy87y.mongodb.net/?retryWrites=true&w=majority"
 	defer cancel()
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
