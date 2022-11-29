@@ -29,6 +29,7 @@ func RetrieveReviewsByAnime(c *gin.Context) {
 	}
 
 	var reviewList []map[string]interface{}
+
 	var populate bson.M = bson.M{"$lookup": bson.M{
 		"from":         "user",
 		"localField":   "user",
